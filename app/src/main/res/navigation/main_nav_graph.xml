@@ -11,7 +11,9 @@
         tools:layout="@layout/fragment_main" >
         <action
             android:id="@+id/action_showDetail"
-            app:destination="@id/detailFragment" />
+            app:destination="@id/detailFragment"
+            app:enterAnim="@anim/anim_in"
+            app:popEnterAnim="@anim/anim_out" />
     </fragment>
 
     <fragment
@@ -22,7 +24,13 @@
 
         <argument
             android:name="selectedAsteroid"
-            app:argType="com.udacity.asteroidradar.Asteroid"/>
+            app:argType="com.udacity.asteroidradar.Asteroid" />
+        <action
+            android:id="@+id/action_detailFragment_to_mainFragment"
+            app:destination="@id/mainFragment"
+            app:enterAnim="@anim/anim_out"
+            app:popEnterAnim="@anim/anim_in"
+            app:popUpTo="@id/mainFragment" />
     </fragment>
 
 </navigation>
