@@ -1,11 +1,12 @@
 package com.udacity.asteroidradar.main
 
-import android.util.Log
-import androidx.lifecycle.*
-import androidx.work.impl.constraints.controllers.NetworkUnmeteredController
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.udacity.asteroidradar.Asteroid
-import com.udacity.asteroidradar.Constants
 import com.udacity.asteroidradar.Constants.API_KEY
+import com.udacity.asteroidradar.PictureOfDay
 import com.udacity.asteroidradar.api.ApiService
 import com.udacity.asteroidradar.api.parseAsteroidsJsonResult
 import kotlinx.coroutines.Dispatchers
@@ -13,6 +14,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import timber.log.Timber
+
 
 class MainViewModel : ViewModel() {
 
@@ -28,10 +30,13 @@ class MainViewModel : ViewModel() {
         Asteroid(1, "Asteroidus", "Hi hi", 7.0, 2.0, 2.0, 4.0, true)
     )
 
-    private val _asteroidList = MutableLiveData<List<Asteroid>>(list)
+    private val _asteroidList = MutableLiveData<List<Asteroid>>()
     val asteroidList: LiveData<List<Asteroid>>
         get() = _asteroidList
 
+    private val _pictureofDay = MutableLiveData<PictureOfDay>()
+    val pictureofDay: LiveData<PictureOfDay>
+        get() = _pictureofDay
 
     private val _navigateToDetailAsteroid = MutableLiveData<Asteroid>()
     val navigateToDetailAsteroid: LiveData<Asteroid>
@@ -40,6 +45,7 @@ class MainViewModel : ViewModel() {
     init {
         viewModelScope.launch {
             refreshAsteroids()
+            refreshPictureofDay()
         }
     }
 
@@ -51,16 +57,34 @@ class MainViewModel : ViewModel() {
         _navigateToDetailAsteroid.value = null
     }
 
+
     private suspend fun refreshAsteroids() {
         withContext(Dispatchers.IO) {
             try {
                 val asteroids = ApiService.Network.asteroidService.getAsteroid(API_KEY)
                 val result = parseAsteroidsJsonResult(JSONObject(asteroids))
-                //database.videoDao.insertAll(*playlist.asDatabaseModel())
-                Timber.i(result.toString())
+                _asteroidList.postValue(result)
+
+                Timber.i("Works!!! ${result.size}")
             } catch (err: Exception) {
-                //Timber.e(err.printStackTrace().toString())
-                err.printStackTrace()
+                Timber.e(err.printStackTrace().toString())
+            }
+        }
+    }
+
+
+    private suspend fun refreshPictureofDay() {
+        withContext(Dispatchers.IO) {
+            try {
+                //_pictureofDay.postValue(ApiService.Network.asteroidService.getPictureOfTheDay(API_KEY, LocalDate.of(2020,12, 28)))
+                //_pictureofDay.postValue(ApiService.Network.asteroidService.getPictureOfTheDay(API_KEY, LocalDate.now()))
+                _pictureofDay.postValue(
+                    ApiService.Network.asteroidService.getPictureOfTheDay(
+                        API_KEY
+                    )
+                )
+            } catch (err: Exception) {
+                Timber.e(err.printStackTrace().toString())
             }
         }
     }

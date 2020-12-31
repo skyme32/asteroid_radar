@@ -18,6 +18,7 @@
     <string name="potentially_hazardous_asteroid_image">Imagen de asteroide potencialmente peligrosa</string>
     <string name="not_hazardous_asteroid_image">Imagen de asteroide no peligrosa</string>
     <string name="this_is_nasa_s_picture_of_day_showing_nothing_yet">Esta es la foto del día de la NASA, que aún no muestra nada</string>
-    <string name="nasa_picture_of_day_content_description_format">Imagen de la NASA del dia: %s</string>
+    <string name="nasa_picture_of_day_content_description_format">Imagen de la NASA del día: %s</string>
     <string name="title_asteroid">Titulo del asteroide</string>
+    <string name="detail_asteroid">Detalle del Asteroide</string>
 </resources>
