@@ -23,4 +23,6 @@
             android:resource="@array/preloaded_fonts" />
     </application>
 
+    <!-- I donwload the icon the NEXT web: Icons made by <a href="https://www.flaticon.com/authors/pixel-perfect" title="Pixel perfect">Pixel perfect</a> from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a>-->
+
 </manifest>

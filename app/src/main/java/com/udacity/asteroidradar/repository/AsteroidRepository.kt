@@ -27,7 +27,7 @@ class AsteroidRepository(private val database: AsteroidDatabase) {
     private val startDate = LocalDateTime.now()
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private val endDate = LocalDateTime.now().minusDays(7)
+    private val endDate = LocalDateTime.now().plusDays(7)
 
 
     /**
