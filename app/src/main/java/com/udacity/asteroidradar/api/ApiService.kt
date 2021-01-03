@@ -1,22 +1,18 @@
 package com.udacity.asteroidradar.api
 
-import android.media.Image
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import com.udacity.asteroidradar.Constants.API_KEY
-import com.udacity.asteroidradar.Constants.BASE_URL
-import com.udacity.asteroidradar.Constants.BASE_URL_APOD
-import com.udacity.asteroidradar.Constants.BASE_URL_FEED
+import com.udacity.asteroidradar.utils.Constants.BASE_URL
+import com.udacity.asteroidradar.utils.Constants.BASE_URL_APOD
+import com.udacity.asteroidradar.utils.Constants.BASE_URL_FEED
 import com.udacity.asteroidradar.PictureOfDay
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import retrofit2.http.GET
-import retrofit2.http.Headers
 import retrofit2.http.Query
-import java.time.LocalDate
 import java.util.concurrent.TimeUnit
 
 class ApiService {
@@ -40,6 +36,7 @@ class ApiService {
 
     /**
      * Main entry point for network access. Call like 'Network.asteroidService.getAsteroid(API_KEY)'
+     * When don't exist internet, have an erro, but i don't know how controll that
      */
     object Network {
         private val okHttpClient: OkHttpClient by lazy {

@@ -1,9 +1,12 @@
 package com.udacity.asteroidradar
 
+import android.view.View
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import com.squareup.picasso.Picasso
+import timber.log.Timber
 
 
 @BindingAdapter("statusIcon")
@@ -17,10 +20,15 @@ fun bindAsteroidStatusImage(imageView: ImageView, isHazardous: Boolean) {
 
 @BindingAdapter("asteroidStatusImage")
 fun bindDetailsStatusImage(imageView: ImageView, isHazardous: Boolean) {
+    val context = imageView.context
+
     if (isHazardous) {
         imageView.setImageResource(R.drawable.asteroid_hazardous)
+        imageView.contentDescription =
+            context.getString(R.string.potentially_hazardous_asteroid_image)
     } else {
         imageView.setImageResource(R.drawable.asteroid_safe)
+        imageView.contentDescription = context.getString(R.string.not_hazardous_asteroid_image)
     }
 }
 
@@ -40,6 +48,14 @@ fun bindTextViewToKmUnit(textView: TextView, number: Double) {
 fun bindTextViewToDisplayVelocity(textView: TextView, number: Double) {
     val context = textView.context
     textView.text = String.format(context.getString(R.string.km_s_unit_format), number)
+}
+
+/**
+ * Binding adapter used to hide the spinner once data is available
+ */
+@BindingAdapter("goneIfNotNull")
+fun goneIfNotNull(view: View, it: Int) {
+    view.visibility = if (it != 0) View.GONE else View.VISIBLE
 }
 
 /**

@@ -9,11 +9,21 @@ import androidx.navigation.fragment.findNavController
 import com.udacity.asteroidradar.Asteroid
 import com.udacity.asteroidradar.R
 import com.udacity.asteroidradar.databinding.FragmentMainBinding
+import com.udacity.asteroidradar.utils.FilterAsteroid
 
 class MainFragment : Fragment() {
 
     private val viewModel: MainViewModel by lazy {
-        ViewModelProvider(this).get(MainViewModel::class.java)
+        //ViewModelProvider(this).get(MainViewModel::class.java)
+        val activity = requireNotNull(this.activity) {
+            "You can only access the viewModel after onViewCreated()"
+        }
+        //The ViewModelProviders (plural) is deprecated.
+        //ViewModelProviders.of(this, DevByteViewModel.Factory(activity.application)).get(DevByteViewModel::class.java)
+        ViewModelProvider(
+            this,
+            MainViewModel.Factory(activity.application)
+        ).get(MainViewModel::class.java)
     }
 
     private val asteroidAdapter = AsteroidAdapter(AsteroidAdapter.AsteroidListener { asteroid ->
@@ -48,7 +58,7 @@ class MainFragment : Fragment() {
      */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.asteroidList.observe(viewLifecycleOwner, Observer<List<Asteroid>> { asteroid ->
+        viewModel.playlist.observe(viewLifecycleOwner, Observer<List<Asteroid>> { asteroid ->
             asteroid.apply {
                 asteroidAdapter.submitList(this)
             }
@@ -60,8 +70,30 @@ class MainFragment : Fragment() {
         super.onCreateOptionsMenu(menu, inflater)
     }
 
+    /**
+     * android:id="@+id/show_all_menu"
+     * android:id="@+id/show_rent_menu"
+     * android:id="@+id/show_buy_menu"
+     */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        viewModel.onChangeFilter(
+            when (item.itemId) {
+                R.id.show_rent_menu -> {
+                    FilterAsteroid.TODAY
+                }
+                R.id.show_all_menu -> {
+                    FilterAsteroid.WEEK
+                }
+                else -> {
+                    FilterAsteroid.ALL
+                }
+
+            }
+        )
+
         return true
     }
+
+
 
 }

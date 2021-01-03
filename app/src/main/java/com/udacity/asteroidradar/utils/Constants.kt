@@ -1,4 +1,4 @@
-package com.udacity.asteroidradar
+package com.udacity.asteroidradar.utils
 
 import retrofit2.http.GET
 import retrofit2.http.Query

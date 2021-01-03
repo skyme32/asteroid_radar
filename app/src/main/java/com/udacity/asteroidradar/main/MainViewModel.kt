@@ -1,23 +1,25 @@
 package com.udacity.asteroidradar.main
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import android.app.Application
+import androidx.lifecycle.*
 import com.udacity.asteroidradar.Asteroid
-import com.udacity.asteroidradar.Constants.API_KEY
+import com.udacity.asteroidradar.utils.Constants.API_KEY
 import com.udacity.asteroidradar.PictureOfDay
 import com.udacity.asteroidradar.api.ApiService
-import com.udacity.asteroidradar.api.parseAsteroidsJsonResult
+import com.udacity.asteroidradar.database.getDatabase
+import com.udacity.asteroidradar.repository.AsteroidRepository
+import com.udacity.asteroidradar.utils.FilterAsteroid
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.json.JSONObject
 import timber.log.Timber
 
 
-class MainViewModel : ViewModel() {
+class MainViewModel(application: Application) : AndroidViewModel(application) {
 
+    /**
+     * Dummy data
+     */
     private val list = mutableListOf(
         Asteroid(1, "Moliesus", "Mo mo", 1.0, 1.0, 8.0, 12.0, false),
         Asteroid(1, "Moliesus", "Mo mo", 1.0, 1.0, 8.0, 12.0, true),
@@ -30,9 +32,8 @@ class MainViewModel : ViewModel() {
         Asteroid(1, "Asteroidus", "Hi hi", 7.0, 2.0, 2.0, 4.0, true)
     )
 
-    private val _asteroidList = MutableLiveData<List<Asteroid>>()
-    val asteroidList: LiveData<List<Asteroid>>
-        get() = _asteroidList
+    private val database = getDatabase(application)
+    private val asteroidRepository = AsteroidRepository(database)
 
     private val _pictureofDay = MutableLiveData<PictureOfDay>()
     val pictureofDay: LiveData<PictureOfDay>
@@ -42,9 +43,19 @@ class MainViewModel : ViewModel() {
     val navigateToDetailAsteroid: LiveData<Asteroid>
         get() = _navigateToDetailAsteroid
 
+    private var _filterAsteroid = MutableLiveData(FilterAsteroid.ALL)
+
+    val playlist = Transformations.switchMap(_filterAsteroid) {
+        when (it!!) {
+            FilterAsteroid.WEEK -> asteroidRepository.weekAsteroids
+            FilterAsteroid.TODAY -> asteroidRepository.todayAsteroids
+            else -> asteroidRepository.allAsteroids
+        }
+    }
+
     init {
         viewModelScope.launch {
-            refreshAsteroids()
+            asteroidRepository.refreshAsteroids()
             refreshPictureofDay()
         }
     }
@@ -57,20 +68,38 @@ class MainViewModel : ViewModel() {
         _navigateToDetailAsteroid.value = null
     }
 
+    fun onChangeFilter(filter: FilterAsteroid) {
+        _filterAsteroid.postValue(filter)
+    }
 
-    private suspend fun refreshAsteroids() {
-        withContext(Dispatchers.IO) {
-            try {
-                val asteroids = ApiService.Network.asteroidService.getAsteroid(API_KEY)
-                val result = parseAsteroidsJsonResult(JSONObject(asteroids))
-                _asteroidList.postValue(result)
-
-                Timber.i("Works!!! ${result.size}")
-            } catch (err: Exception) {
-                Timber.e(err.printStackTrace().toString())
+    /**
+     * Factory for constructing MainViewModel with parameter
+     */
+    class Factory(val app: Application) : ViewModelProvider.Factory {
+        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+            if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
+                @Suppress("UNCHECKED_CAST")
+                return MainViewModel(app) as T
             }
+            throw IllegalArgumentException("Unable to construct viewmodel")
         }
     }
+
+
+    /**
+    private suspend fun refreshAsteroids() {
+    withContext(Dispatchers.IO) {
+    try {
+    val asteroids = ApiService.Network.asteroidService.getAsteroid(API_KEY)
+    val result = parseAsteroidsJsonResult(JSONObject(asteroids))
+    _asteroidList.postValue(result)
+
+    Timber.i("Works!!! ${result.size}")
+    } catch (err: Exception) {
+    Timber.e(err.printStackTrace().toString())
+    }
+    }
+     **/
 
 
     private suspend fun refreshPictureofDay() {

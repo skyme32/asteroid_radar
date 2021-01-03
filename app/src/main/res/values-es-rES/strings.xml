@@ -3,7 +3,7 @@
     <string name="app_name">Asteroid Radar</string>
     <string name="next_week_asteroids">Asteroide semanal</string>
     <string name="today_asteroids">Asteroide de hoy</string>
-    <string name="saved_asteroids">Guardar asteorides</string>
+    <string name="saved_asteroids">Asteorides guardados</string>
     <string name="close_approach_data_title">Fecha de aproximación</string>
     <string name="absolute_magnitude_title">" Magnitud absoluta"</string>
     <string name="estimated_diameter_title">Diámetro estimado</string>
@@ -13,7 +13,7 @@
     <string name="km_unit_format">%f km</string>
     <string name="km_s_unit_format">%f km/s</string>
     <string name="image_of_the_day">Imagen del día</string>
-    <string name="astronomica_unit_explanation">La unidad astronómica (au) es una unidad de longitud, aproximadamente la distancia de la Tierra al Sol e igual a unos 150 millones de kilómetros (93 millones de millas).</string>
+    <string name="astronomica_unit_explanation">La unidad astronómica (au) es una unidad de longitud, aproximadamente la distancia de la Tierra al Sol és igual a unos 150 millones de kilómetros (93 millones de millas).</string>
     <string name="astronomical_unit_explanation_button">Definición de unidad astronómica</string>
     <string name="potentially_hazardous_asteroid_image">Imagen de asteroide potencialmente peligrosa</string>
     <string name="not_hazardous_asteroid_image">Imagen de asteroide no peligrosa</string>
